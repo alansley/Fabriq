@@ -16,6 +16,22 @@ namespace Fabriq;
 /// Internally, the solver works with joint positions as described in the original
 /// FABRIK paper (Aristidou and Lasenby, 2011). The quaternion orientations stored
 /// on each bone are derived from those positions after each solve.
+///
+/// PARENT CHAIN CONNECTION
+/// -----------------------
+/// A chain may be anchored to a specific joint on another chain via
+/// <see cref="ParentChain"/> and <see cref="ParentJointIndex"/>. When set, the
+/// structure updates this chain's BasePosition from that joint before solving.
+/// Constraints at the junction belong to this chain — the parent chain does not
+/// impose constraints on its children. If ParentChain is null, the chain is
+/// anchored to world space via BasePosition directly.
+///
+/// PER-CHAIN TARGET
+/// ----------------
+/// A chain may declare its own target via <see cref="Target"/>, overriding the
+/// structure's default target. When null, the chain inherits the structure target.
+/// This allows a hand structure to solve each finger toward a different contact
+/// point while sharing a single structure-level fallback.
 /// </summary>
 public interface IFabrikChain
 {
@@ -59,6 +75,26 @@ public interface IFabrikChain
     /// but not reaching the target.
     /// </summary>
     float MinIterationChange { get; set; }
+
+    /// <summary>
+    /// The chain this chain's base is anchored to, if any. When set, the structure
+    /// will update this chain's BasePosition from the joint at ParentJointIndex on
+    /// the parent chain before each solve. When null, this chain is world-anchored.
+    /// </summary>
+    IFabrikChain? ParentChain { get; set; }
+
+    /// <summary>
+    /// The index of the joint on <see cref="ParentChain"/> that this chain's base
+    /// tracks. Ignored when ParentChain is null. Joint 0 is the parent's base;
+    /// joint ParentChain.Bones.Count is the parent's end effector.
+    /// </summary>
+    int ParentJointIndex { get; set; }
+
+    /// <summary>
+    /// An optional per-chain target that overrides the structure's default target.
+    /// When null, this chain inherits the structure's target during solve.
+    /// </summary>
+    Vector3? Target { get; set; }
 
     /// <summary>
     /// An optional name for this chain, used for identification and debugging.
