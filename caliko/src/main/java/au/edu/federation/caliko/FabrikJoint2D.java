@@ -63,7 +63,7 @@ public class FabrikJoint2D implements FabrikJoint<FabrikJoint2D>, Serializable
 	private float mClockwiseConstraintDegs = MAX_2D_CONSTRAINT_ANGLE_DEGS;
 
 	/**
-	 * mAntiClockwiseContraintDegs	The angle (specified in degrees) up to which this FabrikJoint2D is allowed to
+	 * mAntiClockwiseConstraintDegs	The angle (specified in degrees) up to which this FabrikJoint2D is allowed to
 	 * rotate in an anticlockwise direction with regard to either the previous bone in the chain, or if this is
 	 * a basebone then either a world-space direction or the direction of a bone that the bone containing
 	 * this joint may be connected to.
