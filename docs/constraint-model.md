@@ -73,7 +73,7 @@ common biological joints are given below — these are illustrative only, not
 enforced by the library:
 
 | Joint             | Approximate (x, y) | Notes                                    |
-|-------------------|--------------------|--------------------------------------------|
+|-------------------|--------------------|------------------------------------------|
 | Human knuckle     | `(0.05, 0.2)`      | Narrow lateral, moderate flex            |
 | Human elbow       | `(0.05, 0.45)`     | Near-hinge; ~160° flex possible          |
 | Human wrist       | `(0.15, 0.3)`      | More flex than lateral deviation         |
@@ -103,10 +103,21 @@ biological or mechanical.
 
 ## Twist Constraints
 
-Twist — rotation of a bone around its own long axis — is a known future consideration.
-A forearm can pronate and supinate (palm up to palm down); a robot tool head may need
-to spin. This is not modelled in the current constraint system and is deferred to a
-later version of Fabriq.
+Twist is rotation of a bone around its own long axis — forearm pronation and supination
+(palm up to palm down) is the most familiar example. A twist constraint specifies the
+minimum and maximum angle of rotation around the bone's long axis, measured from a
+neutral reference orientation.
+
+Critically, twist propagates down the chain. When a bone twists within its allowed
+range, its full quaternion orientation — including that twist — becomes the reference
+frame for every downstream bone. If your forearm pronates 45°, your wrist's valid
+constraint range rotates 45° with it, and your fingers' valid ranges rotate with that.
+This propagation happens automatically because constraints are always evaluated relative
+to the parent bone's complete quaternion orientation, twist included.
+
+Twist is not an edge case or deferred complexity — it is a natural and necessary part
+of the constraint model, and it is handled correctly by the quaternion representation
+from the outset.
 
 ---
 
