@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Fabriq.Demo/Fabriq.Demo.csproj" />
+  <Project Path="Fabriq.Tests/Fabriq.Tests.csproj" />
+  <Project Path="Fabriq.Visualisation/Fabriq.Visualisation.csproj" />
+  <Project Path="Fabriq/Fabriq.csproj" />
+</Solution>
