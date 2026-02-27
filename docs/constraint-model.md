@@ -72,14 +72,14 @@ for any use case that requires it. For reference, approximate values for some
 common biological joints are given below — these are illustrative only, not
 enforced by the library:
 
-| Joint | Approximate (x, y) | Notes |
-|-------|--------------------|-------|
-| Human knuckle | `(0.05, 0.2)` | Narrow lateral, moderate flex |
-| Human elbow | `(0.05, 0.45)` | Near-hinge; ~160° flex possible |
-| Human wrist | `(0.15, 0.3)` | More flex than lateral deviation |
-| Human shoulder | `(0.55, 0.65)` | Wide freedom, more vertical than lateral |
-| Robot pivot joint | `(0.0, 0.5)` | Pure hinge, could also use Hinge type |
-| Robot free joint | `(1.0, 1.0)` | No restriction |
+| Joint             | Approximate (x, y) | Notes                                    |
+|-------------------|--------------------|--------------------------------------------|
+| Human knuckle     | `(0.05, 0.2)`      | Narrow lateral, moderate flex            |
+| Human elbow       | `(0.05, 0.45)`     | Near-hinge; ~160° flex possible          |
+| Human wrist       | `(0.15, 0.3)`      | More flex than lateral deviation         |
+| Human shoulder    | `(0.55, 0.65)`     | Wide freedom, more vertical than lateral |
+| Robot pivot joint | `(0.0, 0.5)`       | Pure hinge, could also use Hinge type    |
+| Robot free joint  | `(1.0, 1.0)`       | No restriction                           |
 
 A `(1.0, 1.0)` full-sphere joint is biologically implausible for most flesh-and-bone
 use cases — a bone pointing directly back along its parent would imply self-intersection
