@@ -12,6 +12,29 @@ namespace Fabriq;
 /// right arm, left leg, right leg, spine, head) is a chain within it. A hand is
 /// another natural structure: the palm is the base, and each finger is a chain.
 ///
+/// ╔═══════════════════════════════════════════════════════════════════════════╗
+/// ║  FUNDAMENTAL: THE SOLVE IS SEQUENTIAL AND OUTWARD FROM THE ROOT         ║
+/// ║                                                                          ║
+/// ║  A structure is NOT solved in parallel. Chains are solved one at a time, ║
+/// ║  starting from the root chain and working outward through the dependency ║
+/// ║  tree. Each chain's BasePosition is updated from its parent's solved     ║
+/// ║  joint position BEFORE that chain is solved.                             ║
+/// ║                                                                          ║
+/// ║  This means a child chain's solve is always based on where its parent   ║
+/// ║  actually ended up — not where it started. Position flows outward from  ║
+/// ║  the structure root, exactly as it does in a real articulated body.     ║
+/// ║                                                                          ║
+/// ║  Example — a humanoid arm:                                               ║
+/// ║    1. Solve spine  → spine result is now authoritative                  ║
+/// ║    2. Update shoulder base from spine's solved joint position            ║
+/// ║    3. Solve upper arm → upper arm result is now authoritative            ║
+/// ║    4. Update forearm base from upper arm's solved end effector           ║
+/// ║    5. Solve forearm → and so on to wrist, then each finger              ║
+/// ║                                                                          ║
+/// ║  Attempting to solve chains in parallel or in arbitrary order will       ║
+/// ║  produce incorrect results. The structure enforces solve order.          ║
+/// ╚═══════════════════════════════════════════════════════════════════════════╝
+///
 /// TARGET RESOLUTION
 /// -----------------
 /// A structure has a single default target. Each chain within the structure may
@@ -41,19 +64,18 @@ namespace Fabriq;
 /// constraint ownership unambiguous and makes chains self-contained units that
 /// can be moved between structures without losing their behaviour.
 ///
-/// During solve, the structure is responsible for updating each chain's BasePosition
-/// from its parent chain's joint position before solving that chain. Chains must
-/// therefore be solved in dependency order: a parent chain is always solved before
-/// any chain that is anchored to it.
-///
 /// SOLVE RESULTS
 /// -------------
-/// Solve() returns one SolveResult per chain, in chain order. No aggregate result
-/// is provided. An aggregate (e.g. average distance across all end effectors) would
-/// be meaningless — "how close is the hand to the target" is a question about the
-/// structure's base position, not about the IK solve. Per-chain results give the
-/// caller actionable diagnostic data: which chains converged, which did not, and
-/// by how much. A caller that wants a summary can compute it from the list.
+/// Solve() returns one SolveResult per chain, in root-outward dependency order.
+/// The results are sequential — result[i] reflects the state of chain[i] after
+/// its parent chains have already been solved and its BasePosition updated.
+///
+/// No aggregate result is provided. An aggregate (e.g. average distance across
+/// all end effectors) would be meaningless — "how close is the hand to the target"
+/// is a question about the structure's base position, not about the IK solve.
+/// Per-chain results give the caller actionable diagnostic data: which chains
+/// converged, which did not, and by how much. A caller that wants a summary can
+/// compute it from the list.
 /// </summary>
 public interface IFabrikStructure
 {
